@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  margin: 0;
+  background: #071014;
+  color: #f6f7f8;
+}
+
+.light body {
+  background: #f4f6f7;
+  color: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border border-zinc-800/90 bg-zinc-950/55 shadow-panel backdrop-blur dark:border-zinc-800/90 dark:bg-zinc-950/55;
+    @apply light:border-zinc-200 light:bg-white light:shadow-sm;
+  }
+
+  .accent-panel {
+    @apply border-united-red/70 shadow-glow;
+  }
+
+  .metric-label {
+    @apply text-xs font-medium uppercase tracking-normal text-zinc-400 light:text-zinc-500;
+  }
+}
