@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ComponentProps } from "react";
 import { Brain, Database, FileText, GitBranch, Network, SlidersHorizontal, Zap, type LucideIcon } from "lucide-react";
 import { CompetitionBarChart, MiniResultBars, RiskMatrix, TacticalRadarChart } from "@/components/analytics-charts";
@@ -23,6 +23,7 @@ import {
   type AnalyticsFilters
 } from "@/lib/analytics";
 import { automationCards, competitions, demoFixtures, demoMatches, demoPlayers, type Venue } from "@/lib/mock-data";
+import type { AiResponse } from "@/lib/ai-types";
 
 const copy = {
   ua: {
@@ -119,6 +120,8 @@ export default function OverviewPage() {
   const { locale } = useLocale();
   const text = copy[locale];
   const [filters, setFilters] = useState<AnalyticsFilters>(defaultFilters);
+  const [aiInsight, setAiInsight] = useState<AiResponse | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const scopedMatches = useMemo(() => filterMatches(filters), [filters]);
   const teamMetrics = useMemo(() => calculateTeamMetrics(scopedMatches), [scopedMatches]);
@@ -131,6 +134,32 @@ export default function OverviewPage() {
   const nextFixture = demoFixtures[0];
 
   const kpiBars = scopedMatches.slice(-10).map((match) => 10 + match.xG * 11);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadInsight() {
+      setAiLoading(true);
+      try {
+        const result = await fetch("/api/ai/insights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ language: locale, filters })
+        });
+        const insight = (await result.json()) as AiResponse;
+        if (!cancelled) setAiInsight(insight);
+      } catch {
+        if (!cancelled) setAiInsight(null);
+      } finally {
+        if (!cancelled) setAiLoading(false);
+      }
+    }
+
+    void loadInsight();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [filters, locale]);
 
   return (
     <div className="space-y-4">
@@ -176,11 +205,26 @@ export default function OverviewPage() {
         </Panel>
         <Panel accent>
           <SectionTitle title={text.analyst} action={text.fullAnalysis} />
-          <div className="space-y-3">
-            <RiskBadge label={locale === "ua" ? `Гостьовий індекс форми: ${teamMetrics.awayFormIndex}. Потрібна компактність після втрат.` : `Away form index: ${teamMetrics.awayFormIndex}. Compactness after turnovers needs attention.`} />
-            <RiskBadge label={locale === "ua" ? `Тактичний ризик ${Math.round(tacticalMetrics.tacticalRiskScore)}/100, головний драйвер - перехідна оборона.` : `Tactical risk is ${Math.round(tacticalMetrics.tacticalRiskScore)}/100, driven mostly by transition defense.`} />
-            <RiskBadge label={locale === "ua" ? `Найсильніший вплив у вибірці: ${players[0]?.name} (${players[0]?.impactScore}).` : `Top player impact in scope: ${players[0]?.name} (${players[0]?.impactScore}).`} />
-          </div>
+          {aiLoading && <div className="grid min-h-[170px] place-items-center text-sm text-zinc-400">AI analysis is running...</div>}
+          {!aiLoading && aiInsight ? (
+            <div className="space-y-3">
+              <p className="line-clamp-4 text-sm leading-6 text-zinc-200 light:text-zinc-700">{aiInsight.answer}</p>
+              {aiInsight.recommendations.slice(0, 3).map((item) => (
+                <RiskBadge key={item.title} label={`${item.title}: ${item.rationale}`} />
+              ))}
+              <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
+                <span>confidence {Math.round(aiInsight.trace.confidence * 100)}%</span>
+                <span>risk {aiInsight.trace.riskLevel}</span>
+                <span>{aiInsight.usedMetrics.slice(0, 3).join(", ")}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <RiskBadge label={locale === "ua" ? `Гостьовий індекс форми: ${teamMetrics.awayFormIndex}. Потрібна компактність після втрат.` : `Away form index: ${teamMetrics.awayFormIndex}. Compactness after turnovers needs attention.`} />
+              <RiskBadge label={locale === "ua" ? `Тактичний ризик ${Math.round(tacticalMetrics.tacticalRiskScore)}/100, головний драйвер - перехідна оборона.` : `Tactical risk is ${Math.round(tacticalMetrics.tacticalRiskScore)}/100, driven mostly by transition defense.`} />
+              <RiskBadge label={locale === "ua" ? `Найсильніший вплив у вибірці: ${players[0]?.name} (${players[0]?.impactScore}).` : `Top player impact in scope: ${players[0]?.name} (${players[0]?.impactScore}).`} />
+            </div>
+          )}
         </Panel>
       </div>
 
