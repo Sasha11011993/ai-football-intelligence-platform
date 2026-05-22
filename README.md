@@ -82,14 +82,16 @@ See `docs/IMPLEMENTATION_ROADMAP.md` for details.
 
 ## Current Status
 
-Phase 1 application scaffold is implemented:
+Phase 2 data and analytics engine is implemented:
 
 - Next.js App Router with TypeScript and Tailwind CSS
 - Dashboard-first shell with desktop sidebar and mobile horizontal navigation
 - Ukrainian-first product UI with visible `UA | EN` switcher
 - Dark/light theme support with dark mode as the default demo theme
-- Placeholder pages for all core product areas
 - Manchester United-inspired dashboard and Case Study visual foundation
+- Local Manchester United 2025/26 demo data for matches, fixtures, players, and tactical signals
+- Deterministic analytics calculators for team metrics, player impact, trends, and tactical risk
+- Filtered dashboard KPI cards, charts, match tables, player analytics, and tactical analysis
 
 ## Setup
 

@@ -2,9 +2,16 @@
 
 import { useSyncExternalStore } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { trendData } from "@/lib/mock-data";
 
-export function TrendChart() {
+type TrendPoint = {
+  match: string;
+  label?: string;
+  opponent?: string;
+  xG: number;
+  xGA: number;
+};
+
+export function TrendChart({ data }: { data: TrendPoint[] }) {
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -18,7 +25,7 @@ export function TrendChart() {
   return (
     <div className="h-[230px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={trendData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <CartesianGrid stroke="rgba(148,163,184,0.12)" vertical={false} />
           <XAxis dataKey="match" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
           <YAxis tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />

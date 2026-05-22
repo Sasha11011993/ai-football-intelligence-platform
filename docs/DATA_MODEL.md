@@ -140,6 +140,32 @@ The demo data should be separated from metric calculations. Future phases may ad
 - database persistence;
 - scheduled refresh through n8n.
 
+## Phase 2 Implementation Notes
+
+Phase 2 stores the local Manchester United 2025/2026 demo season in `lib/mock-data.ts` and keeps derived calculations in `lib/analytics.ts`.
+
+Implemented demo entities:
+
+- 24 played matches across Premier League, Champions League, FA Cup, and Carabao Cup.
+- Upcoming fixtures with opponent form, strengths, weaknesses, and match importance.
+- Player season profiles with minutes, goals, assists, xG, xA, key passes, pressing actions, recoveries, rating, form trend, and injury status.
+
+Implemented filters:
+
+- tournament;
+- home/away/neutral venue;
+- date range;
+- player selector for player-impact context.
+
+Implemented derived outputs:
+
+- team KPI metrics;
+- xG/xGA trend data;
+- competition split;
+- player impact scores;
+- tactical profile;
+- tactical risk score and risk matrix.
+
 ## Supabase Persistence Model
 
 Future real-data persistence is specified in `docs/SUPABASE_PERSISTENCE.md`.
