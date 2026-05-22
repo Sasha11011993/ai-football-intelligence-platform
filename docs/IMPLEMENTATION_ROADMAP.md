@@ -47,6 +47,7 @@ Deliverables:
 - Ukrainian-first UI copy with a visible `UA | EN` language switcher.
 - Dark/light theme switcher, with dark mode as the default demo theme and full light-mode support.
 - Approved design direction from `docs/DESIGN_DIRECTION.md`, including red accent rules and Ukrainian UI terminology.
+- Visual alignment with `docs/references/dashboard-target.png` and `docs/references/case-study-target.png`.
 
 Acceptance criteria:
 
@@ -54,6 +55,7 @@ Acceptance criteria:
 - Navigation works between all core pages.
 - The layout is responsive enough for desktop and mobile foundations.
 - Theme switching works across the application shell and placeholder pages.
+- Dashboard and Case Study placeholders visually follow the approved reference images without using them as static screenshots.
 - UI foundation is ready for analytics components.
 
 ## Phase 2: Data + Analytics Engine

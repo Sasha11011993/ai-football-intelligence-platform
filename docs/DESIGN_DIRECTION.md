@@ -4,6 +4,13 @@
 
 The approved visual direction is a premium dark football operations command center. It should feel like a real product used by analysts, coaches, and technical staff, not a landing page or decorative concept.
 
+Approved reference images:
+
+- `docs/references/dashboard-target.png`
+- `docs/references/case-study-target.png`
+
+Use these images as implementation references for layout, density, hierarchy, navigation, Ukrainian labels, red accent usage, and Case Study structure. Do not embed them as static UI screenshots in place of building real components.
+
 The UI should communicate:
 
 ```text
@@ -120,4 +127,3 @@ The final portfolio should include at least:
 - Case Study page screenshot;
 - optional light-theme screenshot;
 - optional Automation Hub screenshot.
-

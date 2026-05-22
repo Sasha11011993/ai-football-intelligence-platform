@@ -51,6 +51,8 @@ Read:
 - docs/PROJECT_BRIEF.md
 - docs/IMPLEMENTATION_ROADMAP.md
 - docs/ARCHITECTURE.md
+- docs/DESIGN_DIRECTION.md
+- docs/references/README.md
 
 Goal:
 Create the base Next.js + TypeScript + Tailwind app with dashboard-first navigation and placeholder pages.
@@ -59,6 +61,7 @@ Acceptance criteria:
 - App runs locally.
 - Navigation works between all core pages.
 - UI foundation is ready for analytics.
+- Dashboard and Case Study placeholders follow the approved reference images without embedding them as static screenshots.
 ```
 
 ### Phase 2 Starter

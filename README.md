@@ -74,6 +74,7 @@ See `docs/IMPLEMENTATION_ROADMAP.md` for details.
 - `docs/ARCHITECTURE.md` - system architecture
 - `docs/DATA_MODEL.md` - domain model and analytics metrics
 - `docs/DESIGN_DIRECTION.md` - approved dashboard and Case Study visual direction
+- `docs/references/` - approved dashboard and Case Study visual target images
 - `docs/AI_AGENT_SPEC.md` - AI agents, structured outputs, trace, quality checks
 - `docs/N8N_WORKFLOWS.md` - automation workflows and contracts
 - `docs/SUPABASE_PERSISTENCE.md` - future real-data storage architecture
