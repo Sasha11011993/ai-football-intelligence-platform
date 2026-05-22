@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, CheckCircle2, ShieldCheck } from "lucide-react";
+import { useEffect, useState, type ComponentType } from "react";
+import { Activity, AlertTriangle, CheckCircle2, Gauge, ShieldCheck, type LucideProps } from "lucide-react";
+import { ConfidenceRiskStrip, DataLineagePanel, QualityChecksPanel } from "@/components/ai-explainability";
 import { AiResponsePanel } from "@/components/ai-response-panel";
 import { useLocale } from "@/components/providers";
 import { Panel, SectionTitle, StatusBadge } from "@/components/ui";
@@ -16,9 +17,11 @@ const copy = {
     response: "Оцінка якості",
     empty: "Запусти evaluation, щоб побачити structured quality response.",
     checks: "QA-перевірки",
-    grounded: "Grounded in supplied metrics",
-    lineage: "Data lineage present",
-    warnings: "Missing-data warnings returned"
+    grounded: "Grounded у наданих метриках",
+    confidence: "Рівень впевненості",
+    hallucination: "Ризик галюцинацій",
+    missing: "Попередження",
+    audit: "Аудит AI-відповіді"
   },
   en: {
     title: "AI Quality",
@@ -28,8 +31,10 @@ const copy = {
     empty: "Run evaluation to see a structured quality response.",
     checks: "QA checks",
     grounded: "Grounded in supplied metrics",
-    lineage: "Data lineage present",
-    warnings: "Missing-data warnings returned"
+    confidence: "Confidence level",
+    hallucination: "Hallucination risk",
+    missing: "Warnings",
+    audit: "AI response audit"
   }
 } as const;
 
@@ -39,13 +44,25 @@ export default function QualityPage() {
   const [response, setResponse] = useState<AiResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    void runEvaluation();
+    // The evaluation should refresh when the product language changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
+
   async function runEvaluation() {
     setLoading(true);
     try {
-      const result = await fetch("/api/ai/evaluate", {
+      const insightResult = await fetch("/api/ai/insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ language: locale, filters: defaultFilters })
+      });
+      const previousResponse = (await insightResult.json()) as AiResponse;
+      const result = await fetch("/api/ai/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: locale, filters: defaultFilters, previousResponse })
       });
       setResponse((await result.json()) as AiResponse);
     } finally {
@@ -80,19 +97,67 @@ export default function QualityPage() {
         <Panel>
           <SectionTitle title={text.checks} />
           <div className="space-y-3">
-            {[text.grounded, text.lineage, text.warnings].map((item, index) => (
-              <div key={item} className="flex items-center justify-between gap-3 rounded-md border border-zinc-800 p-3 text-sm light:border-zinc-200">
-                <span className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-400" />
-                  {item}
-                </span>
-                <StatusBadge tone={index === 2 ? "gold" : "green"}>{index === 2 ? "warn" : "pass"}</StatusBadge>
-              </div>
-            ))}
+            <QualityMetric
+              icon={CheckCircle2}
+              label={text.grounded}
+              value={response?.qualityChecks.groundedInData ? "pass" : response ? "fail" : "pending"}
+              tone={response?.qualityChecks.groundedInData ? "green" : response ? "red" : "gold"}
+            />
+            <QualityMetric
+              icon={Gauge}
+              label={text.confidence}
+              value={response ? `${Math.round(response.trace.confidence * 100)}%` : "pending"}
+              tone={response && response.trace.confidence >= 0.75 ? "green" : response && response.trace.confidence >= 0.55 ? "gold" : response ? "red" : "gold"}
+            />
+            <QualityMetric
+              icon={ShieldCheck}
+              label={text.hallucination}
+              value={response?.qualityChecks.hallucinationRisk ?? "pending"}
+              tone={response?.qualityChecks.hallucinationRisk === "high" ? "red" : response?.qualityChecks.hallucinationRisk === "medium" ? "gold" : response ? "green" : "gold"}
+            />
+            <QualityMetric
+              icon={AlertTriangle}
+              label={text.missing}
+              value={response ? String(response.qualityChecks.missingDataWarnings.length) : "pending"}
+              tone={response && response.qualityChecks.missingDataWarnings.length > 1 ? "gold" : "green"}
+            />
           </div>
         </Panel>
         <AiResponsePanel response={response} loading={loading} title={text.response} emptyText={text.empty} />
       </div>
+
+      {response && (
+        <div className="grid gap-4 xl:grid-cols-[0.8fr_1fr_1fr]">
+          <Panel accent>
+            <SectionTitle title={text.audit} />
+            <ConfidenceRiskStrip response={response} />
+          </Panel>
+          <DataLineagePanel response={response} panel />
+          <QualityChecksPanel response={response} panel />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function QualityMetric({
+  icon: Icon,
+  label,
+  value,
+  tone
+}: {
+  icon: ComponentType<LucideProps>;
+  label: string;
+  value: string;
+  tone: "green" | "blue" | "gold" | "red";
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-md border border-zinc-800 p-3 text-sm light:border-zinc-200">
+      <span className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-united-red" />
+        {label}
+      </span>
+      <StatusBadge tone={tone}>{value}</StatusBadge>
     </div>
   );
 }

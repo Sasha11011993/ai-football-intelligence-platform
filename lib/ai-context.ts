@@ -85,22 +85,34 @@ export function buildAiContext(input?: {
   const dataLineage: AiDataLineage[] = [
     {
       source: "matches",
+      sourceCategory: "match_data",
       filter: describeFilters(filters),
+      dateRange: `${filters.dateFrom}..${filters.dateTo}`,
+      metrics: ["goalsFor", "goalsAgainst", "xG", "xGA", "matchControl", "defensiveRisk", "transitionRisk"],
       impact: "primary"
     },
     {
       source: "derived_metrics",
+      sourceCategory: "derived_metrics",
       filter: "team, tactical, form, competition split, trend summaries",
+      dateRange: `${filters.dateFrom}..${filters.dateTo}`,
+      metrics: ["formIndex", "awayFormIndex", "xGD", "defensiveStability", "tacticalRiskScore"],
       impact: "primary"
     },
     {
       source: "players",
+      sourceCategory: "player_data",
       filter: "top five player impact profiles",
+      dateRange: "season profile",
+      metrics: ["impactScore", "goals", "assists", "xG", "xA", "rating", "formTrend"],
       impact: "supporting"
     },
     {
       source: "fixtures",
+      sourceCategory: "fixture_data",
       filter: fixture ? `next fixture: ${fixture.opponent}` : "no fixture selected",
+      dateRange: fixture?.date ?? "next available fixture",
+      metrics: ["opponentForm", "opponentStrengths", "opponentWeaknesses", "matchImportance"],
       impact: "supporting"
     }
   ];
@@ -174,4 +186,3 @@ function roundAverage(values: number[]) {
   const sum = values.reduce((acc, value) => acc + value, 0);
   return Math.round((sum / values.length) * 10) / 10;
 }
-

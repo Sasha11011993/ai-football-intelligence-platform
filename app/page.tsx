@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentProps } from "react";
 import { Brain, Database, FileText, GitBranch, Network, SlidersHorizontal, Zap, type LucideIcon } from "lucide-react";
+import { AgentWorkflowTrace, ConfidenceRiskStrip, DataLineagePanel, QualityChecksPanel } from "@/components/ai-explainability";
 import { CompetitionBarChart, MiniResultBars, RiskMatrix, TacticalRadarChart } from "@/components/analytics-charts";
 import { TrendChart } from "@/components/trend-chart";
 import { AutomationCard, KpiCard, Panel, RiskBadge, SectionTitle, StatusBadge } from "@/components/ui";
@@ -212,11 +213,7 @@ export default function OverviewPage() {
               {aiInsight.recommendations.slice(0, 3).map((item) => (
                 <RiskBadge key={item.title} label={`${item.title}: ${item.rationale}`} />
               ))}
-              <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
-                <span>confidence {Math.round(aiInsight.trace.confidence * 100)}%</span>
-                <span>risk {aiInsight.trace.riskLevel}</span>
-                <span>{aiInsight.usedMetrics.slice(0, 3).join(", ")}</span>
-              </div>
+              <ConfidenceRiskStrip response={aiInsight} compact />
             </div>
           ) : (
             <div className="space-y-3">
@@ -250,21 +247,35 @@ export default function OverviewPage() {
         </Panel>
         <Panel accent>
           <SectionTitle title={text.trace} action={text.fullAnalysis} />
-          <div className="grid gap-2 text-sm">
-            {[
-              [text.metrics, `xG ${teamMetrics.xG}, xGA ${teamMetrics.xGA}, ${text.control} ${Math.round(tacticalMetrics.matchControl)}`],
-              [text.pattern, tacticalMetrics.transitionRisk > 60 ? (locale === "ua" ? "Ризик швидких атак після втрат" : "Counter-attack risk after turnovers") : (locale === "ua" ? "Контроль матчу стабільний" : "Match control is stable")],
-              [text.confidence, `${Math.min(92, 70 + teamMetrics.matches)}%`],
-              [text.riskLevel, riskLabel(tacticalMetrics.tacticalRiskScore, locale)]
-            ].map(([label, value]) => (
-              <div key={label} className="grid grid-cols-[145px_1fr] gap-3 rounded-md border border-zinc-800 p-3 light:border-zinc-200">
-                <span className="text-zinc-400">{label}</span>
-                <span>{value}</span>
-              </div>
-            ))}
-          </div>
+          {aiInsight ? (
+            <div className="space-y-3">
+              <ConfidenceRiskStrip response={aiInsight} compact />
+              <AgentWorkflowTrace response={aiInsight} />
+            </div>
+          ) : (
+            <div className="grid gap-2 text-sm">
+              {[
+                [text.metrics, `xG ${teamMetrics.xG}, xGA ${teamMetrics.xGA}, ${text.control} ${Math.round(tacticalMetrics.matchControl)}`],
+                [text.pattern, tacticalMetrics.transitionRisk > 60 ? (locale === "ua" ? "Ризик швидких атак після втрат" : "Counter-attack risk after turnovers") : (locale === "ua" ? "Контроль матчу стабільний" : "Match control is stable")],
+                [text.confidence, `${Math.min(92, 70 + teamMetrics.matches)}%`],
+                [text.riskLevel, riskLabel(tacticalMetrics.tacticalRiskScore, locale)]
+              ].map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[145px_1fr] gap-3 rounded-md border border-zinc-800 p-3 light:border-zinc-200">
+                  <span className="text-zinc-400">{label}</span>
+                  <span>{value}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </Panel>
       </div>
+
+      {aiInsight && (
+        <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
+          <DataLineagePanel response={aiInsight} panel />
+          <QualityChecksPanel response={aiInsight} panel />
+        </div>
+      )}
 
       <div className="grid gap-4 xl:grid-cols-[1fr_0.75fr]">
         <Panel>

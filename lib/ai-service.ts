@@ -41,10 +41,13 @@ const aiResponseSchema = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["source", "filter", "impact"],
+        required: ["source", "sourceCategory", "filter", "dateRange", "metrics", "impact"],
         properties: {
           source: { type: "string" },
+          sourceCategory: { type: "string", enum: ["match_data", "derived_metrics", "player_data", "fixture_data", "ai_evaluation"] },
           filter: { type: "string" },
+          dateRange: { type: "string" },
+          metrics: { type: "array", items: { type: "string" } },
           impact: { type: "string", enum: ["primary", "supporting"] }
         }
       }

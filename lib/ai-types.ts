@@ -18,7 +18,10 @@ export type AiTrace = {
 
 export type AiDataLineage = {
   source: string;
+  sourceCategory: "match_data" | "derived_metrics" | "player_data" | "fixture_data" | "ai_evaluation";
   filter: string;
+  dateRange: string;
+  metrics: string[];
   impact: "primary" | "supporting";
 };
 
@@ -47,4 +50,3 @@ export type AiRequestBody = {
   fixtureId?: string;
   previousResponse?: AiResponse;
 };
-
