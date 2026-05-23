@@ -1,30 +1,28 @@
 # AI Football Intelligence & Automation Platform
 
-Portfolio-grade AI analytics and automation platform for a Manchester United 2025/2026 demo season.
+Portfolio-ready AI analytics and automation platform for a Manchester United 2025/2026 demo season.
 
-This project is designed to demonstrate how a modern AI/data product can turn football performance data into decision-ready insights, automated reports, and agent-assisted recommendations.
+The product shows how football performance data can become decision-ready intelligence through analytics, AI agents, explainability, workflow automation, and report export.
 
 ```text
 Data -> Metrics -> AI Context -> AI Agent -> Automation -> Report -> Decision
 ```
 
-## What This Project Demonstrates
+## Project Goal
 
-- Data analytics and metric design
-- AI agent integration with structured outputs
-- Agent explainability through workflow trace and data lineage
-- AI quality checks and groundedness evaluation
-- n8n workflow orchestration
-- Supabase persistence planning for real parsed data
-- Product-minded dashboard UX
-- Ukrainian-first interface with optional English mode
-- Dark/light theme support
-- Portfolio-ready technical storytelling
+This is not only a sports dashboard. It is a compact AI decision-support platform designed for a recruiter/client demo in a few minutes:
 
-## Core Features
+- detect a football performance problem;
+- inspect the metrics behind it;
+- generate an AI recommendation grounded in demo data;
+- trigger an n8n-ready automation/report result;
+- review trace, data lineage, and quality checks;
+- export a copy-ready Markdown report.
+
+## Features
 
 - Manchester United 2025/2026 analytics dashboard
-- Team, player, and tactical analytics
+- Team, player, tactical, and risk analytics
 - AI Analyst Chat
 - Match Preparation Agent
 - Weekly Executive Report
@@ -32,40 +30,87 @@ Data -> Metrics -> AI Context -> AI Agent -> Automation -> Report -> Decision
 - Agent Workflow Trace
 - Data Lineage
 - AI Quality / Evaluation Layer
-- n8n Automation Hub
-- Demo Scenario Mode
-- Export Report
-- Case Study page
-- Future Supabase-backed real data ingestion
-- UA/EN language switcher with Ukrainian as the default product language
-- Dark/light theme switcher with dark mode as the preferred demo default
+- n8n Automation Hub with mock/webhook mode
+- One-click Demo Scenario
+- Markdown report copy/download experience
+- Live Case Study portfolio page
+- In-app architecture flow
+- Ukrainian-first interface with English mode
+- Dark/light theme support
+- Supabase persistence plan for Phase 7 real data
+
+## Tech Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Recharts
+- lucide-react
+- OpenAI API through server-side routes
+- n8n webhook contracts and mock fallback
+- Planned Supabase Postgres + Storage schema for real data persistence
 
 ## Architecture
 
+Current v1 demo flow:
+
 ```text
-Demo Data
+Local Demo Dataset
   -> Analytics Engine
   -> AI Context Builder
-  -> OpenAI API
-  -> Agent Trace + Recommendations
-  -> n8n Workflows
-  -> Reports + Alerts + Decisions
+  -> OpenAI-backed Agents
+  -> Agent Trace + Quality Checks
+  -> n8n Automation Contracts
+  -> Markdown Report / Alert Payload / Decision View
 ```
 
-## Implementation Plan
+Future Phase 7 real-data flow:
 
-The project is implemented in phases:
+```text
+External Sources / Parser / n8n
+  -> Supabase Storage + Ingestion Tables
+  -> Normalized Supabase Postgres Tables
+  -> Metrics Calculators
+  -> Dashboard + AI Context Builder
+```
 
-0. Documentation Foundation
-1. App Scaffold + Design System
-2. Data + Analytics Engine
-3. AI Core
-4. Explainability + Quality Layer
-5. n8n Automation
-6. Demo Scenario + Portfolio Polish
-7. Real Data + Supabase Persistence
+Supabase is intentionally not implemented as active persistence in Phase 6. The schema and storage design are documented for the next phase.
 
-See `docs/IMPLEMENTATION_ROADMAP.md` for details.
+## Demo Flow
+
+Open `/demo` and click `Запустити демо` / `Run demo`.
+
+The scenario demonstrates:
+
+1. Problem detection: transition-defense risk in away matches.
+2. Metrics analysis: away form, tactical risk, transition risk, defensive stability.
+3. AI recommendation: structured answer with prioritized actions.
+4. Automation/report result: demo orchestrator returns an n8n-ready payload.
+5. Quality/trace summary: confidence, risk, data lineage, and hallucination-risk checks.
+6. Export: copy or download a Markdown executive report.
+
+## Screenshots Guidance
+
+Recommended portfolio screenshots:
+
+- Main dashboard in dark mode: `/`
+- One-click demo scenario after a run: `/demo`
+- Case Study page: `/case-study`
+- Automation Hub with a workflow result: `/automation`
+- Optional light-mode comparison for dashboard or Case Study
+
+Use `docs/references/dashboard-target.png` and `docs/references/case-study-target.png` as visual direction references only. They should not be embedded as product UI.
+
+## Phase Status
+
+- Phase 0: Documentation Foundation - complete
+- Phase 1: App Scaffold + Design System - complete
+- Phase 2: Data + Analytics Engine - complete
+- Phase 3: AI Core - complete
+- Phase 4: Explainability + Quality Layer - complete
+- Phase 5: n8n Automation Hub - complete
+- Phase 6: Demo Scenario + Portfolio Polish - complete
+- Phase 7: Real Data + Supabase Persistence - planned
 
 ## Documentation
 
@@ -74,24 +119,10 @@ See `docs/IMPLEMENTATION_ROADMAP.md` for details.
 - `docs/ARCHITECTURE.md` - system architecture
 - `docs/DATA_MODEL.md` - domain model and analytics metrics
 - `docs/DESIGN_DIRECTION.md` - approved dashboard and Case Study visual direction
-- `docs/references/` - approved dashboard and Case Study visual target images
 - `docs/AI_AGENT_SPEC.md` - AI agents, structured outputs, trace, quality checks
 - `docs/N8N_WORKFLOWS.md` - automation workflows and contracts
 - `docs/SUPABASE_PERSISTENCE.md` - future real-data storage architecture
-- `docs/PHASE_HANDOFF_TEMPLATE.md` - starter prompts for new implementation chats
-
-## Current Status
-
-Phase 2 data and analytics engine is implemented:
-
-- Next.js App Router with TypeScript and Tailwind CSS
-- Dashboard-first shell with desktop sidebar and mobile horizontal navigation
-- Ukrainian-first product UI with visible `UA | EN` switcher
-- Dark/light theme support with dark mode as the default demo theme
-- Manchester United-inspired dashboard and Case Study visual foundation
-- Local Manchester United 2025/26 demo data for matches, fixtures, players, and tactical signals
-- Deterministic analytics calculators for team metrics, player impact, trends, and tactical risk
-- Filtered dashboard KPI cards, charts, match tables, player analytics, and tactical analysis
+- `docs/references/` - approved visual target references
 
 ## Setup
 
@@ -107,33 +138,32 @@ Run the local development server:
 npm run dev
 ```
 
-Build for production:
-
-```bash
-npm run build
-```
-
 Run lint checks:
 
 ```bash
 npm run lint
 ```
 
-Expected future environment variables:
+Build for production:
 
-- `OPENAI_API_KEY` for AI routes
-- n8n webhook secrets if workflow endpoints need protection
+```bash
+npm run build
+```
 
-Do not commit secrets to this repository.
+## Environment
+
+Optional local variables:
+
+- `OPENAI_API_KEY` for OpenAI-backed AI routes
+- `N8N_WEBHOOK_WEEKLY_REPORT_URL`
+- `N8N_WEBHOOK_MATCHDAY_PREP_URL`
+- `N8N_WEBHOOK_ANOMALY_ALERT_URL`
+- `N8N_WEBHOOK_DEMO_ORCHESTRATOR_URL`
+
+If n8n webhook URLs are absent, the dashboard returns server-side mock automation payloads using the same AI service contract.
+
+Do not commit secrets. `.env.local` is ignored by Git.
 
 ## Portfolio Positioning
 
-This is not only a sports dashboard. It is a compact AI decision-support platform that shows how analytics, AI agents, and automation can work together in a realistic operational workflow.
-
-## Language
-
-The product UI is Ukrainian-first and should include a visible `UA | EN` language switcher. AI answers, reports, workflow statuses, and dashboard labels default to Ukrainian, with English available as an alternate mode.
-
-## Theme
-
-The product should support both dark and light themes. Dark mode is the preferred default for portfolio demos, while light mode should remain polished, readable, and fully supported across dashboard, AI, automation, and report views.
+The project demonstrates AI automation, data analytics, AI agent development, structured output design, explainability, n8n orchestration, future-ready Supabase architecture, and product-minded full-stack UX.
